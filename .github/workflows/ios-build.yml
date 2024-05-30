@@ -72,7 +72,7 @@ jobs:
       - name: export ipa
         run: |
           cd ios
-          xcodebuild -exportOptionsPlist ./build/buildapp.xcarhive/info.plist -exportArchive -archivePath ./build/buildapp.xcarchive  -exportPath ./build
+          xcodebuild -exportOptionsPlist ./build/buildapp.xcarchive/Info.plist -exportArchive -archivePath ./build/buildapp.xcarchive  -exportPath ./build
       - name: Upload application
         uses: actions/upload-artifact@v3
         with:
