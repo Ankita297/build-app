@@ -54,21 +54,15 @@ jobs:
           cd ios
           bundle install
           pod install
-      - name: Build the project
+      - name: Build and Archive the project
         run: |
           cd ios
-          xcodebuild build \
+          xcodebuild -workspace BuildApp.xcworkspace \
+          -scheme "BuildApp" \
           -configuration Debug \
-            -workspace BuildApp.xcworkspace \
-            -scheme "BuildApp" \
-            -destination generic/platform=iOS
-      - name: Archive the project
-        run: |
-          cd ios
-          xcodebuild -workspace BuildApp.xcworkspace archive \
-            -scheme "BuildApp" \
-            -destination generic/platform=iOS \
-            -archivePath ./build/buildapp.xcarchive
+          -destination generic/platform=iOS \
+          archive \
+          -archivePath ./build/buildapp.xcarchive   
       - name: export ipa
         run: |
           cd ios
