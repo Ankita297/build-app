@@ -52,7 +52,6 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd ios
-          bundle install
           pod install
       - name: Build and Archive the project
         run: |
