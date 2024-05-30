@@ -29,10 +29,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-       - name: android-bundle
+      - name: android-bundle
         run: npm react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
 
-       - name: android-build
+      - name: android-build
         run: cd android/ && ./gradlew clean && ./gradlew assembleDebug && cd ..
 
       - name: Upload application (Debug)
