@@ -1,4 +1,4 @@
-name: "Build iOS app"
+name: 'Build iOS app'
 
 on:
   # manual trigger but change to any supported event
@@ -28,24 +28,19 @@ jobs:
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.cer
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-
           # import certificate and provisioning profile from secrets
           echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
           echo -n "$BUILD_PROVISION_PROFILE_PART1$BUILD_PROVISION_PROFILE_PART2" | base64 --decode -o $PP_PATH
-
           # create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-
           # import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
-
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles          
-
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -59,15 +54,14 @@ jobs:
           cd ios
           bundle install
           pod install
-
       - name: Build the project
         run: |
           cd ios
           xcodebuild build \
+          -configuration Debug \
             -workspace BuildApp.xcworkspace \
             -scheme "BuildApp" \
             -destination generic/platform=iOS
-
       - name: Archive the project
         run: |
           cd ios
@@ -75,17 +69,10 @@ jobs:
             -scheme "BuildApp" \
             -destination generic/platform=iOS \
             -archivePath ./build/buildapp.xcarchive
-
       - name: export ipa
-        env:
-          EXPORT_OPTIONS_PLIST: ${{ secrets.EXPORT_OPTIONS_PLIST }}
         run: |
           cd ios
-          xcodebuild -exportArchive \
-            -archivePath ./build/buildapp.xcarchive \           
-            -exportOptionsPlist ExportOptions.plist \
-            -exportPath ./build
-
+          xcodebuild -exportOptionsPlist ./build/buildapp.xcarhive -exportArchive -archivePath ./build/buildapp.xcarchive  -exportPath ./build
       - name: Upload application
         uses: actions/upload-artifact@v3
         with:
