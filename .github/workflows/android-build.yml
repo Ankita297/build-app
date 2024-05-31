@@ -1,8 +1,15 @@
 name: "Build Android app"
 
 on:
- workflow_dispatch:
-    # can add push and pull_request here 
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name to run the action on'
+        required: true
+        default: 'main'
+    # Uncomment the following lines if you also want to trigger on push and pull_request events
+    # push:
+    # pull_request:
 
 jobs:
   build:
@@ -10,13 +17,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
-      - name: Install Java
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
           distribution: 'adopt'
-          cache: "gradle"
+          java-version: '17'
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
@@ -28,13 +36,14 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-             
+
       # Debug build steps
       - name: Build application (Debug)
         run: |
-             cd android
-             ./gradlew assembleDebug
-             
+          echo "Building Debug APK on branch ${{ github.event.inputs.branch }}"
+          cd android
+          ./gradlew assembleDebug
+
       - name: Upload application (Debug)
         uses: actions/upload-artifact@v2
         with:
@@ -45,9 +54,10 @@ jobs:
       # Release build steps
       - name: Build application (Release)
         run: |
-             cd android
-             ./gradlew assembleRelease
-             
+          echo "Building Release APK on branch ${{ github.event.inputs.branch }}"
+          cd android
+          ./gradlew assembleRelease
+
       - name: Upload application (Release)
         uses: actions/upload-artifact@v2
         with:
