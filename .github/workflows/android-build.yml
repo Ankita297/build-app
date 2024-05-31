@@ -44,13 +44,15 @@ jobs:
              
       - name: Compress Debug APK
         run: |
-             tar -czf app-debug.tar.gz -C android/app/build/outputs/apk/debug app-debug.apk
+             echo "Compressing Debug APK"
+             cd android/app/build/outputs/apk/debug
+             tar -czf app-debug.tar.gz app-debug.apk
              
       - name: Upload compressed application (Debug)
         uses: actions/upload-artifact@v2
         with:
           name: app-debug
-          path: app-debug.tar.gz
+          path: android/app/build/outputs/apk/debug/app-debug.tar.gz
           retention-days: 3
 
       # Release build steps
@@ -59,4 +61,16 @@ jobs:
              echo "Running action on branch ${{ github.event.inputs.branch }}"
              cd android
              ./gradlew assembleRelease
-         
+             
+      - name: Compress Release APK
+        run: |
+             echo "Compressing Release APK"
+             cd android/app/build/outputs/apk/release
+             tar -czf app-release.tar.gz app-release.apk
+             
+      - name: Upload compressed application (Release)
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: android/app/build/outputs/apk/release/app-release.tar.gz
+          retention-days: 3
