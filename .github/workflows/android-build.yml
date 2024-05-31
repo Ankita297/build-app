@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       - name: Install Java
         uses: actions/setup-java@v2
@@ -36,25 +38,25 @@ jobs:
       # Debug build steps
       - name: Build application (Debug)
         run: |
+             echo "Running action on branch ${{ github.event.inputs.branch }}"
              cd android
              ./gradlew assembleDebug
              
-      - name: Upload application (Debug)
+      - name: Compress Debug APK
+        run: |
+             tar -czf app-debug.tar.gz -C android/app/build/outputs/apk/debug app-debug.apk
+             
+      - name: Upload compressed application (Debug)
         uses: actions/upload-artifact@v2
         with:
           name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: app-debug.tar.gz
           retention-days: 3
 
       # Release build steps
       - name: Build application (Release)
         run: |
+             echo "Running action on branch ${{ github.event.inputs.branch }}"
              cd android
              ./gradlew assembleRelease
-             
-      - name: Upload application (Release)
-        uses: actions/upload-artifact@v2
-        with:
-          name: app-release
-          path: android/app/build/outputs/apk/release/app-release.apk
-          retention-days: 3
+         
