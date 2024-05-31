@@ -1,10 +1,13 @@
 name: 'Build iOS app'
 
 on:
-  # manual trigger but change to any supported event
   workflow_dispatch:
-    branches: [main]
-
+    inputs:
+      branch:
+        description: 'Branch name to run the action on'
+        required: true
+        default: 'main'
+        
 jobs:
   build_with_signing:
     runs-on: macos-latest
