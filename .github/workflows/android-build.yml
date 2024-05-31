@@ -1,12 +1,8 @@
 name: "Build Android app"
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch name to run the action on'
-        required: true
-        default: 'main'
+ workflow_dispatch:
+    # can add push and pull_request here 
 
 jobs:
   build:
@@ -14,8 +10,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.branch }}
 
       - name: Install Java
         uses: actions/setup-java@v2
@@ -38,39 +32,25 @@ jobs:
       # Debug build steps
       - name: Build application (Debug)
         run: |
-             echo "Running action on branch ${{ github.event.inputs.branch }}"
              cd android
              ./gradlew assembleDebug
              
-      - name: Compress Debug APK
-        run: |
-             echo "Compressing Debug APK"
-             cd android/app/build/outputs/apk/debug
-             tar -czf app-debug.tar.gz app-debug.apk
-             
-      - name: Upload compressed application (Debug)
+      - name: Upload application (Debug)
         uses: actions/upload-artifact@v2
         with:
           name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.tar.gz
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 3
 
       # Release build steps
       - name: Build application (Release)
         run: |
-             echo "Running action on branch ${{ github.event.inputs.branch }}"
              cd android
              ./gradlew assembleRelease
              
-      - name: Compress Release APK
-        run: |
-             echo "Compressing Release APK"
-             cd android/app/build/outputs/apk/release
-             tar -czf app-release.tar.gz app-release.apk
-             
-      - name: Upload compressed application (Release)
+      - name: Upload application (Release)
         uses: actions/upload-artifact@v2
         with:
           name: app-release
-          path: android/app/build/outputs/apk/release/app-release.tar.gz
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 3
