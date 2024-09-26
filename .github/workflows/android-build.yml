@@ -38,25 +38,17 @@ jobs:
         run: npm install
 
       # Debug build steps
-      - name: Bundle React Native code for Debug
-        run: npm run react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
-
-      # Debug build steps
       - name: Build application (Debug)
         run: |
           echo "Building Debug APK on branch ${{ github.event.inputs.branch }}"
           cd android
           ./gradlew assembleDebug
       - name: Upload application (Debug)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 3
-
-      # Release build steps
-      - name: Bundle React Native code for Release
-        run: npm run react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle
 
       # Release build steps
       - name: Build application (Release)
@@ -65,7 +57,7 @@ jobs:
           cd android
           ./gradlew assembleRelease
       - name: Upload application (Release)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: app-release
           path: android/app/build/outputs/apk/release/app-release.apk
