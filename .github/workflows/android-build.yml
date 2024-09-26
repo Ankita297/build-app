@@ -47,9 +47,8 @@ jobs:
           echo "Building Debug APK on branch ${{ github.event.inputs.branch }}"
           cd android
           ./gradlew assembleDebug
-
       - name: Upload application (Debug)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@latest
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
@@ -65,9 +64,8 @@ jobs:
           echo "Building Release APK on branch ${{ github.event.inputs.branch }}"
           cd android
           ./gradlew assembleRelease
-
       - name: Upload application (Release)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@latest
         with:
           name: app-release
           path: android/app/build/outputs/apk/release/app-release.apk
